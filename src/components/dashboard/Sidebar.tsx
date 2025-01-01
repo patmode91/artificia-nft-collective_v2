@@ -16,38 +16,38 @@ interface SidebarProps {
   onSectionChange?: (section: string) => void;
 }
 
+const navigationItems = [
+  {
+    id: "content-generation",
+    label: "Content Generation",
+    icon: <ImageIcon className="h-5 w-5" />,
+  },
+  {
+    id: "trading",
+    label: "Trading Intelligence",
+    icon: <LineChart className="h-5 w-5" />,
+  },
+  {
+    id: "market-making",
+    label: "Market Making",
+    icon: <Store className="h-5 w-5" />,
+  },
+  {
+    id: "performance",
+    label: "Performance",
+    icon: <BarChart className="h-5 w-5" />,
+  },
+  {
+    id: "agent-control",
+    label: "Agent Control",
+    icon: <Bot className="h-5 w-5" />,
+  },
+];
+
 const Sidebar = ({
   activeSection = "content-generation",
   onSectionChange = () => {},
 }: SidebarProps) => {
-  const navigationItems = [
-    {
-      id: "content-generation",
-      label: "Content Generation",
-      icon: <ImageIcon className="h-5 w-5" />,
-    },
-    {
-      id: "trading",
-      label: "Trading Intelligence",
-      icon: <LineChart className="h-5 w-5" />,
-    },
-    {
-      id: "market-making",
-      label: "Market Making",
-      icon: <Store className="h-5 w-5" />,
-    },
-    {
-      id: "performance",
-      label: "Performance",
-      icon: <BarChart className="h-5 w-5" />,
-    },
-    {
-      id: "agent-control",
-      label: "Agent Control",
-      icon: <Bot className="h-5 w-5" />,
-    },
-  ];
-
   return (
     <div className="h-full w-[280px] bg-background border-r">
       <div className="p-4">
