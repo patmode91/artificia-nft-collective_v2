@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -22,6 +22,14 @@ function AppContent() {
   const { user, loading } = useAuth();
   const [showAuth, setShowAuth] = useState(!user);
 
+  useEffect(() => {
+    if (!user) {
+      setShowAuth(true);
+    } else {
+      setShowAuth(false);
+    }
+  }, [user]);
+
   if (loading) return <LoadingFallback />;
 
   return (
@@ -39,7 +47,7 @@ function AppContent() {
             />
             <Route path="/dashboard/:section" element={<Home />} />
           </Routes>
-          <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
+          {showAuth && <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />}
         </>
       </Suspense>
     </ErrorBoundary>

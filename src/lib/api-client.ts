@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
+import { useEffect } from "react";
 
 // Initialize Supabase client
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -104,3 +105,21 @@ export interface GenerationResult {
   url: string;
   metadata: Record<string, any>;
 }
+
+// Add useEffect hook to handle API state changes
+useEffect(() => {
+  const handleStateChange = async () => {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        api.defaults.headers.common.Authorization = `Bearer ${session.access_token}`;
+      }
+    } catch (error) {
+      console.error("Failed to update API state:", error);
+    }
+  };
+
+  handleStateChange();
+}, []);

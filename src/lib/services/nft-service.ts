@@ -2,6 +2,7 @@ import { NFTContract } from "../contracts/NFTContract";
 import { web3Service } from "../web3";
 import { ipfsService } from "./ipfs-service";
 import { supabase } from "../supabase";
+import { useEffect } from "react";
 
 export class NFTService {
   private contract: NFTContract | null = null;
@@ -77,3 +78,15 @@ export class NFTService {
 }
 
 export const nftService = new NFTService();
+
+useEffect(() => {
+  const handleNFTServiceStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+    } catch (error) {
+      console.error("Failed to update NFT service state:", error);
+    }
+  };
+
+  handleNFTServiceStateChange();
+}, []);
