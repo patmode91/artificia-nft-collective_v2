@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { endpoints, GenerationParams, GenerationResult } from "../api-client";
 
 export function useAI() {
@@ -40,6 +40,18 @@ export function useAI() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const handleAIStateChange = async () => {
+      try {
+        // Perform any necessary state updates here
+      } catch (error) {
+        console.error("Failed to update AI state:", error);
+      }
+    };
+
+    handleAIStateChange();
+  }, []);
 
   return {
     generate,

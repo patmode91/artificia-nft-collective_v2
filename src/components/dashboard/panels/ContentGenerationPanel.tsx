@@ -8,15 +8,12 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ImageIcon, CheckCircle2, Tags, Eye, Loader2 } from "lucide-react";
 import AIModelSelector from "./AIModelSelector";
+import { GenerationResult } from "@/lib/api-client";
 
 interface ContentGenerationPanelProps {
   artProgress?: number;
   qualityScore?: number;
-  generatedImages?: Array<{
-    id: string;
-    url: string;
-    metadata: Record<string, string>;
-  }>;
+  generatedImages?: Array<GenerationResult>;
 }
 
 const ContentGenerationPanel = ({
@@ -32,28 +29,14 @@ const ContentGenerationPanel = ({
     setIsGenerating(true);
     setArtProgress(0);
 
-    // Simulate generation process
-    const totalSteps = settings.batchSize;
-    for (let i = 0; i < totalSteps; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setArtProgress((prev) => prev + 100 / totalSteps);
-
-      // Add a placeholder image
-      setGeneratedImages((prev) => [
-        ...prev,
-        {
-          id: `${Date.now()}-${i}`,
-          url: `https://picsum.photos/400/400?random=${Math.random()}`,
-          metadata: {
-            model: settings.model,
-            style: settings.style,
-            prompt: settings.prompt.substring(0, 30) + "...",
-          },
-        },
-      ]);
+    try {
+      const results = await generate(settings);
+      setGeneratedImages(results);
+    } catch (error) {
+      console.error("Generation error:", error);
+    } finally {
+      setIsGenerating(false);
     }
-
-    setIsGenerating(false);
   };
 
   return (

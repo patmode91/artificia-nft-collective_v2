@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -44,6 +44,20 @@ const defaultAgents = [
 const AgentControlPanel = ({
   agents = defaultAgents,
 }: AgentControlPanelProps) => {
+  const [agentStates, setAgentStates] = useState(agents);
+
+  useEffect(() => {
+    setAgentStates(agents);
+  }, [agents]);
+
+  const handleSwitchChange = (id: string, status: boolean) => {
+    setAgentStates((prev) =>
+      prev.map((agent) =>
+        agent.id === id ? { ...agent, status } : agent
+      )
+    );
+  };
+
   return (
     <div className="p-6 bg-background w-full h-full">
       <h1 className="text-2xl font-bold mb-6">Agent Control Center</h1>
@@ -67,7 +81,7 @@ const AgentControlPanel = ({
         {["art", "trading", "market"].map((type) => (
           <TabsContent key={type} value={type}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {agents
+              {agentStates
                 .filter((agent) => agent.type === type)
                 .map((agent) => (
                   <Card key={agent.id} className="p-4">
@@ -78,7 +92,7 @@ const AgentControlPanel = ({
                       </div>
                       <Switch
                         checked={agent.status}
-                        onCheckedChange={() => {}}
+                        onCheckedChange={(status) => handleSwitchChange(agent.id, status)}
                       />
                     </div>
 

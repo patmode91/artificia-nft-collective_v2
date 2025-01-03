@@ -1,6 +1,7 @@
 import { HfInference } from "@huggingface/inference";
 import { AI_MODELS } from "../models";
 import { supabase } from "../api-client";
+import { useEffect } from "react";
 
 class AIGenerationError extends Error {
   constructor(
@@ -190,3 +191,15 @@ export type GenerationResult = {
   url: string;
   params: GenerationParams;
 };
+
+useEffect(() => {
+  const handleAIServiceStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+    } catch (error) {
+      console.error("Failed to update AI service state:", error);
+    }
+  };
+
+  handleAIServiceStateChange();
+}, []);

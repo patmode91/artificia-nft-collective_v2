@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import ContentGenerationPanel from "./panels/ContentGenerationPanel";
@@ -26,7 +26,13 @@ const LoadingFallback = () => (
 
 const ContentPanel = ({ activePanel: propActivePanel }: ContentPanelProps) => {
   const { section } = useParams();
-  const activePanel = propActivePanel || section || "content-generation";
+  const [activePanel, setActivePanel] = useState(
+    propActivePanel || section || "content-generation"
+  );
+
+  useEffect(() => {
+    setActivePanel(propActivePanel || section || "content-generation");
+  }, [propActivePanel, section]);
 
   const renderPanel = () => {
     const Panel = (() => {

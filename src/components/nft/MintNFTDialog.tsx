@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -44,6 +44,12 @@ export function MintNFTDialog({
     error: txError,
     isLoading,
   } = useTransaction(txHash);
+
+  useEffect(() => {
+    if (status === "confirmed" || status === "failed") {
+      queryClient.invalidateQueries(["nft"]);
+    }
+  }, [status, queryClient]);
 
   const handleMint = async (e: React.FormEvent) => {
     e.preventDefault();

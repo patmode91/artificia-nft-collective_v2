@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Settings2,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -38,7 +39,7 @@ interface AIModelSelectorProps {
 
 const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
   const { generate, isLoading, error, progress } = useAI();
-  const [settings, setSettings] = React.useState({
+  const [settings, setSettings] = useState({
     model: AI_MODELS[0].id,
     prompt: "",
     negativePrompt: "",
@@ -48,6 +49,18 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
     variations: VALIDATION.variations.default,
     seed: Math.floor(Math.random() * 1000000),
   });
+
+  useEffect(() => {
+    const selectedModel = AI_MODELS.find((m) => m.id === settings.model);
+    const selectedStyle = STYLE_PRESETS.find((s) => s.id === settings.style);
+    if (selectedModel && selectedStyle) {
+      setSettings((prev) => ({
+        ...prev,
+        prompt: `${prev.prompt}\n${selectedStyle.prompt}`.trim(),
+        negativePrompt: `${prev.negativePrompt}\n${selectedStyle.negativePrompt}`.trim(),
+      }));
+    }
+  }, [settings.model, settings.style]);
 
   // Get the selected model's configuration
   const selectedModel = AI_MODELS.find((m) => m.id === settings.model);
@@ -260,10 +273,17 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
             settings.prompt.length < VALIDATION.prompt.minLength
           }
         >
-          <Wand2 className="w-4 h-4 mr-2" />
-          {isLoading
-            ? `Generating... ${Math.round(progress)}%`
-            : `Generate ${settings.batchSize} Images`}
+          {isLoading ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Generating... {Math.round(progress)}%
+            </>
+          ) : (
+            <>
+              <Wand2 className="w-4 h-4 mr-2" />
+              Generate {settings.batchSize} Images
+            </>
+          )}
         </Button>
       </div>
     </Card>

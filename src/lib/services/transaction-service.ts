@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { web3Service } from "../web3";
+import { useEffect } from "react";
 
 type TransactionStatus = "pending" | "confirmed" | "failed";
 
@@ -229,3 +230,15 @@ class TransactionService {
 }
 
 export const transactionService = new TransactionService();
+
+useEffect(() => {
+  const handleTransactionServiceStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+    } catch (error) {
+      console.error("Failed to update transaction service state:", error);
+    }
+  };
+
+  handleTransactionServiceStateChange();
+}, []);

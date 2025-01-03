@@ -1,4 +1,3 @@
-// Available AI Models
 export const AI_MODELS = [
   {
     id: "stable-diffusion-v1.5",
@@ -27,9 +26,26 @@ export const AI_MODELS = [
     maxPromptLength: 300,
     supportedFeatures: ["negative_prompt", "guidance_scale"],
   },
+  {
+    id: "dalle-mini",
+    name: "DALL-E Mini",
+    provider: "huggingface",
+    model: "dalle-mini/dalle-mini",
+    maxBatchSize: 4,
+    maxPromptLength: 500,
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+  },
+  {
+    id: "midjourney",
+    name: "MidJourney",
+    provider: "huggingface",
+    model: "midjourney/midjourney",
+    maxBatchSize: 4,
+    maxPromptLength: 500,
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+  },
 ] as const;
 
-// Style Presets
 export const STYLE_PRESETS = [
   {
     id: "realistic",
@@ -57,9 +73,20 @@ export const STYLE_PRESETS = [
     prompt: "abstract art, non-representational, geometric shapes, bold colors",
     negativePrompt: "realistic, recognizable objects, faces, natural",
   },
+  {
+    id: "cyberpunk",
+    name: "Cyberpunk",
+    prompt: "cyberpunk style, futuristic, neon lights, high tech, dystopian",
+    negativePrompt: "natural, traditional, historical, low tech",
+  },
+  {
+    id: "fantasy",
+    name: "Fantasy",
+    prompt: "fantasy style, magical, mythical creatures, enchanted, vibrant",
+    negativePrompt: "realistic, modern, sci-fi, mundane",
+  },
 ] as const;
 
-// Validation
 export const VALIDATION = {
   prompt: {
     minLength: 3,
