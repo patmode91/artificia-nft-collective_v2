@@ -1,4 +1,5 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import Sidebar from "./dashboard/Sidebar";
 import ContentPanel from "./dashboard/ContentPanel";
 import ErrorBoundary from "./ErrorBoundary";
@@ -16,7 +17,14 @@ const LoadingFallback = () => (
 );
 
 const Home = ({ initialSection = "content-generation" }: HomeProps) => {
-  const [activeSection, setActiveSection] = useState(initialSection);
+  const { section } = useParams();
+  const [activeSection, setActiveSection] = useState(section || initialSection);
+
+  useEffect(() => {
+    if (section) {
+      setActiveSection(section);
+    }
+  }, [section]);
 
   return (
     <div className="flex h-screen w-full bg-background">

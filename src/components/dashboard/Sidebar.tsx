@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -48,6 +49,8 @@ const Sidebar = ({
   activeSection = "content-generation",
   onSectionChange = () => {},
 }: SidebarProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="h-full w-[280px] bg-background border-r">
       <div className="p-4">
@@ -66,7 +69,10 @@ const Sidebar = ({
               key={item.id}
               variant={activeSection === item.id ? "secondary" : "ghost"}
               className="w-full justify-start gap-3"
-              onClick={() => onSectionChange(item.id)}
+              onClick={() => {
+                onSectionChange(item.id);
+                navigate(`/dashboard/${item.id}`);
+              }}
             >
               {item.icon}
               {item.label}

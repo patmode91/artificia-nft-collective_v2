@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { useRoutes, Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Card } from "@/components/ui/card";
@@ -29,7 +29,15 @@ function AppContent() {
       <Suspense fallback={<LoadingFallback />}>
         <>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={<Navigate to="/dashboard/content-generation" replace />}
+            />
+            <Route
+              path="/dashboard"
+              element={<Navigate to="/dashboard/content-generation" replace />}
+            />
+            <Route path="/dashboard/:section" element={<Home />} />
           </Routes>
           <AuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
         </>
