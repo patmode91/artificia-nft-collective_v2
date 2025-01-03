@@ -17,6 +17,7 @@ interface SidebarProps {
   onSectionChange?: (section: string) => void;
 }
 
+// Navigation items for the sidebar
 const navigationItems = [
   {
     id: "content-generation",

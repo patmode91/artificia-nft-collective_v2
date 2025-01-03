@@ -10,6 +10,7 @@ interface HomeProps {
   initialSection?: string;
 }
 
+// Loading fallback component to show a spinner while content is loading
 const LoadingFallback = () => (
   <Card className="flex h-full w-full items-center justify-center">
     <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -20,6 +21,7 @@ const Home = ({ initialSection = "content-generation" }: HomeProps) => {
   const { section } = useParams();
   const [activeSection, setActiveSection] = useState(section || initialSection);
 
+  // Update active section when the URL section changes
   useEffect(() => {
     if (section) {
       setActiveSection(section);
