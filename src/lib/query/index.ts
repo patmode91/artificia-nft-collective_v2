@@ -51,3 +51,34 @@ export const queries = {
     },
   },
 };
+
+export const monitorWebSocketConnections = () => {
+  const webSocketConnections = new Set();
+
+  const addConnection = (connection) => {
+    webSocketConnections.add(connection);
+    console.log(`WebSocket connection added: ${connection}`);
+  };
+
+  const removeConnection = (connection) => {
+    webSocketConnections.delete(connection);
+    console.log(`WebSocket connection removed: ${connection}`);
+  };
+
+  const logConnections = () => {
+    console.log(`Active WebSocket connections: ${webSocketConnections.size}`);
+  };
+
+  return {
+    addConnection,
+    removeConnection,
+    logConnections,
+  };
+};
+
+const webSocketMonitor = monitorWebSocketConnections();
+
+export const logWebSocketActivity = (activity) => {
+  console.log(`WebSocket activity: ${activity}`);
+  webSocketMonitor.logConnections();
+};
