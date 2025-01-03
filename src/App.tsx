@@ -11,6 +11,7 @@ import { Web3Provider } from "./lib/web3/Web3Provider";
 import { AuthModal } from "./components/auth/AuthModal";
 import { useAuth } from "./lib/auth";
 import { queryClient } from "./lib/query";
+import https from 'node:https';
 
 const LoadingFallback = () => (
   <Card className="flex h-screen w-full items-center justify-center">
