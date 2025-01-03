@@ -43,7 +43,7 @@ export function NFTGrid() {
           contractAddress={nft.contract_address || ''}
           metadata={nft.metadata || {}}
         />
-      </div>
+      ))}
     </div>
   );
 }

@@ -18,6 +18,7 @@ interface ContentPanelProps {
     | "agent-control";
 }
 
+// Loading fallback component to show a spinner while content is loading
 const LoadingFallback = () => (
   <Card className="flex h-full w-full items-center justify-center">
     <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -30,10 +31,12 @@ const ContentPanel = ({ activePanel: propActivePanel }: ContentPanelProps) => {
     propActivePanel || section || "content-generation"
   );
 
+  // Update active panel when propActivePanel or section changes
   useEffect(() => {
     setActivePanel(propActivePanel || section || "content-generation");
   }, [propActivePanel, section]);
 
+  // Render the appropriate panel based on the activePanel state
   const renderPanel = () => {
     const Panel = (() => {
       switch (activePanel) {

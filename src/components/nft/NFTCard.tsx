@@ -27,11 +27,13 @@ export function NFTCard({
   contractAddress,
   metadata,
 }: NFTCardProps) {
+  // Function to open the Etherscan page for the NFT
   const openEtherscan = () => {
     const baseUrl = "https://etherscan.io/token";
     window.open(`${baseUrl}/${contractAddress}/${tokenId}`, "_blank");
   };
 
+  // Function to share the NFT details using the Web Share API
   const shareNFT = async () => {
     try {
       await navigator.share({

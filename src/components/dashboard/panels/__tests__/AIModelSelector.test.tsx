@@ -80,4 +80,76 @@ describe("AIModelSelector", () => {
       expect(screen.getByRole("progressbar")).toBeInTheDocument();
     });
   });
+
+  it("should handle negative prompt input", async () => {
+    render(<AIModelSelector onGenerate={mockOnGenerate} />);
+
+    // Fill required fields
+    const promptInput = screen.getByPlaceholder("Enter your prompt here...");
+    fireEvent.change(promptInput, { target: { value: "Test prompt" } });
+
+    const negativePromptInput = screen.getByPlaceholder("Enter negative prompt here...");
+    fireEvent.change(negativePromptInput, { target: { value: "Test negative prompt" } });
+
+    // Generate
+    const generateButton = screen.getByText(/Generate/i);
+    fireEvent.click(generateButton);
+
+    await waitFor(() => {
+      expect(mockOnGenerate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prompt: "Test prompt",
+          negativePrompt: "Test negative prompt",
+        }),
+      );
+    });
+  });
+
+  it("should handle guidance scale input", async () => {
+    render(<AIModelSelector onGenerate={mockOnGenerate} />);
+
+    // Fill required fields
+    const promptInput = screen.getByPlaceholder("Enter your prompt here...");
+    fireEvent.change(promptInput, { target: { value: "Test prompt" } });
+
+    const guidanceScaleSlider = screen.getByLabelText(/Guidance Scale/i);
+    fireEvent.change(guidanceScaleSlider, { target: { value: "10" } });
+
+    // Generate
+    const generateButton = screen.getByText(/Generate/i);
+    fireEvent.click(generateButton);
+
+    await waitFor(() => {
+      expect(mockOnGenerate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prompt: "Test prompt",
+          guidance: 10,
+        }),
+      );
+    });
+  });
+
+  it("should handle seed input", async () => {
+    render(<AIModelSelector onGenerate={mockOnGenerate} />);
+
+    // Fill required fields
+    const promptInput = screen.getByPlaceholder("Enter your prompt here...");
+    fireEvent.change(promptInput, { target: { value: "Test prompt" } });
+
+    const seedInput = screen.getByLabelText(/Seed/i);
+    fireEvent.change(seedInput, { target: { value: "123456" } });
+
+    // Generate
+    const generateButton = screen.getByText(/Generate/i);
+    fireEvent.click(generateButton);
+
+    await waitFor(() => {
+      expect(mockOnGenerate).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prompt: "Test prompt",
+          seed: 123456,
+        }),
+      );
+    });
+  });
 });

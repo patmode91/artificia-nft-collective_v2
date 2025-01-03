@@ -25,6 +25,7 @@ const ContentGenerationPanel = ({
   const [artProgress, setArtProgress] = useState(initialProgress);
   const [generatedImages, setGeneratedImages] = useState(initialImages);
 
+  // Handle the generation process
   const handleGenerate = async (settings: any) => {
     setIsGenerating(true);
     setArtProgress(0);
