@@ -1,30 +1,86 @@
-# React + TypeScript + Vite
+# AI NFT Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A platform for generating AI art and minting it as NFTs.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- AI Art Generation using HuggingFace models
+- NFT Minting with IPFS storage
+- Web3 wallet integration
+- Transaction monitoring
+- Real-time updates
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Prerequisites
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js 16+
+- NPM or Yarn
+- MetaMask wallet
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+### Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+VITE_HUGGINGFACE_API_KEY=your_api_key
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_key
+VITE_IPFS_PROJECT_ID=your_ipfs_project_id
+VITE_IPFS_PROJECT_SECRET=your_ipfs_secret
+VITE_CONTRACT_ADDRESS=your_contract_address
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+```
+
+## Architecture
+
+### Frontend
+
+- React + Vite
+- TailwindCSS + shadcn/ui
+- React Query for data fetching
+- Ethers.js for Web3 integration
+
+### Backend
+
+- Supabase for database and authentication
+- HuggingFace for AI models
+- IPFS for decentralized storage
+
+### Smart Contracts
+
+- ERC721 for NFTs
+- OpenZeppelin contracts
+
+## Testing
+
+- Unit tests with Vitest
+- React Testing Library for component tests
+- Contract tests with Hardhat
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

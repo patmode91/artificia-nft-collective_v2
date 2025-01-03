@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -16,37 +17,39 @@ interface SidebarProps {
   onSectionChange?: (section: string) => void;
 }
 
+const navigationItems = [
+  {
+    id: "content-generation",
+    label: "Content Generation",
+    icon: <ImageIcon className="h-5 w-5" />,
+  },
+  {
+    id: "trading",
+    label: "Trading Intelligence",
+    icon: <LineChart className="h-5 w-5" />,
+  },
+  {
+    id: "market-making",
+    label: "Market Making",
+    icon: <Store className="h-5 w-5" />,
+  },
+  {
+    id: "performance",
+    label: "Performance",
+    icon: <BarChart className="h-5 w-5" />,
+  },
+  {
+    id: "agent-control",
+    label: "Agent Control",
+    icon: <Bot className="h-5 w-5" />,
+  },
+];
+
 const Sidebar = ({
   activeSection = "content-generation",
   onSectionChange = () => {},
 }: SidebarProps) => {
-  const navigationItems = [
-    {
-      id: "content-generation",
-      label: "Content Generation",
-      icon: <ImageIcon className="h-5 w-5" />,
-    },
-    {
-      id: "trading",
-      label: "Trading Intelligence",
-      icon: <LineChart className="h-5 w-5" />,
-    },
-    {
-      id: "market-making",
-      label: "Market Making",
-      icon: <Store className="h-5 w-5" />,
-    },
-    {
-      id: "performance",
-      label: "Performance",
-      icon: <BarChart className="h-5 w-5" />,
-    },
-    {
-      id: "agent-control",
-      label: "Agent Control",
-      icon: <Bot className="h-5 w-5" />,
-    },
-  ];
+  const navigate = useNavigate();
 
   return (
     <div className="h-full w-[280px] bg-background border-r">
@@ -66,7 +69,10 @@ const Sidebar = ({
               key={item.id}
               variant={activeSection === item.id ? "secondary" : "ghost"}
               className="w-full justify-start gap-3"
-              onClick={() => onSectionChange(item.id)}
+              onClick={() => {
+                onSectionChange(item.id);
+                navigate(`/dashboard/${item.id}`);
+              }}
             >
               {item.icon}
               {item.label}
