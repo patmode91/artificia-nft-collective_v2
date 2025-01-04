@@ -64,6 +64,29 @@ npm test
 3. Confirm the minting transaction in your MetaMask wallet.
 4. Your NFT will be minted and stored on IPFS.
 
+## Running a Whitesource Scan
+
+To run a Whitesource scan on your repository, follow these steps:
+
+1. Ensure that the `.whitesource` file is correctly configured with the necessary settings.
+2. Open your terminal and navigate to the root directory of your project.
+3. Run the Whitesource scan command:
+   ```bash
+   whitesource run
+   ```
+4. Wait for the scan to complete. The scan results will be displayed in the terminal.
+
+## Interpreting Whitesource Scan Results
+
+After running a Whitesource scan, you can interpret the scan results as follows:
+
+1. Check the scan results for any identified vulnerabilities and issues.
+2. Verify that the branches specified in the `baseBranches` array are being scanned.
+3. Ensure that the scan results are displayed in the "diff" mode, showing only the changes.
+4. Confirm that the scan results use Mend check names.
+5. Check that the scan results include issues with a severity level of "LOW" and above.
+6. Verify that the scan results focus on dependency-related issues.
+
 ## API References
 
 ### AI Model API
