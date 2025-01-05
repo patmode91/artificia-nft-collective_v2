@@ -1,6 +1,6 @@
 import { HfInference } from "@huggingface/inference";
-import { AI_MODELS } from "../models";
-import { supabase } from "../api-client";
+import { GenerationParams, GenerationResult, AI_MODELS } from "../models";
+import { supabase } from "../supabase";
 
 class AIGenerationError extends Error {
   constructor(
@@ -18,25 +18,11 @@ class AIGenerationError extends Error {
   }
 }
 
-class StyleSystemError extends Error {
-  constructor(
-    message: string,
-    public code:
-      | "INVALID_COMBINATION"
-      | "PARAM_RANGE"
-      | "PREVIEW_FAILED"
-      | "PRESET_FAILED",
-    public details?: any,
-  ) {
-    super(message);
-    this.name = "StyleSystemError";
-  }
-}
-
 export class AIService {
   private hf: HfInference;
   private rateLimitCounter: Map<string, { count: number; resetTime: number }> =
     new Map();
+  private interrupted = false;
 
   constructor() {
     this.hf = new HfInference(import.meta.env.VITE_HUGGINGFACE_API_KEY);
@@ -49,7 +35,6 @@ export class AIService {
     if (limit) {
       if (now < limit.resetTime) {
         if (limit.count >= 10) {
-          // 10 requests per minute
           throw new AIGenerationError("Rate limit exceeded", "RATE_LIMIT", {
             resetIn: Math.ceil((limit.resetTime - now) / 1000),
           });
@@ -72,6 +57,10 @@ export class AIService {
       throw new AIGenerationError("Invalid model selected", "INVALID_PARAMS");
     }
 
+    if (params.prompt.length < 3) {
+      throw new AIGenerationError("Prompt too short", "INVALID_PARAMS");
+    }
+
     if (params.prompt.length > model.maxPromptLength) {
       throw new AIGenerationError(
         `Prompt exceeds maximum length of ${model.maxPromptLength}`,
@@ -79,9 +68,9 @@ export class AIService {
       );
     }
 
-    if (params.batchSize && params.batchSize > model.maxBatchSize) {
+    if (params.guidance < 1 || params.guidance > 20) {
       throw new AIGenerationError(
-        `Batch size exceeds maximum of ${model.maxBatchSize}`,
+        "Guidance scale must be between 1 and 20",
         "INVALID_PARAMS",
       );
     }
@@ -90,42 +79,15 @@ export class AIService {
   async generate(
     params: GenerationParams,
     onProgress?: (progress: number) => void,
-  ) {
+  ): Promise<GenerationResult> {
+    this.interrupted = false;
     this.validateParameters(params);
     this.checkRateLimit(params.model);
 
-    const batchSize = params.batchSize || 1;
-    const results: GenerationResult[] = [];
-    let interrupted = false;
-
     try {
-      for (let i = 0; i < batchSize; i++) {
-        if (interrupted) break;
+      if (onProgress) onProgress(10);
 
-        const result = await this.generateSingle(params);
-        results.push(result);
-
-        if (onProgress) {
-          onProgress(((i + 1) / batchSize) * 100);
-        }
-      }
-
-      return results;
-    } catch (error) {
-      if (error instanceof AIGenerationError) {
-        throw error;
-      }
-      throw new AIGenerationError("Generation failed", "BATCH_FAILED", {
-        completed: results.length,
-        total: batchSize,
-      });
-    }
-  }
-
-  private async generateSingle(
-    params: GenerationParams,
-  ): Promise<GenerationResult> {
-    try {
+      // Generate image using HuggingFace
       const response = await this.hf.textToImage({
         model: params.model,
         inputs: params.prompt,
@@ -136,34 +98,66 @@ export class AIService {
         },
       });
 
-      const imageUrl = await this.uploadToStorage(response);
-      return { url: imageUrl, params };
-    } catch (error) {
-      throw new AIGenerationError("Single generation failed", "UNKNOWN", error);
-    }
-  }
+      if (this.interrupted) {
+        throw new AIGenerationError("Generation interrupted", "INTERRUPTED");
+      }
 
-  private async uploadToStorage(imageBlob: Blob): Promise<string> {
-    const fileName = `generated/${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+      if (onProgress) onProgress(50);
 
-    try {
-      const { data, error } = await supabase.storage
+      // Upload to Supabase storage
+      const fileName = `generated/${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from("images")
-        .upload(fileName, imageBlob, {
+        .upload(fileName, response, {
           contentType: "image/png",
           cacheControl: "3600",
         });
 
-      if (error) throw error;
+      if (uploadError) throw uploadError;
 
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("images").getPublicUrl(fileName);
+      if (onProgress) onProgress(80);
 
-      return publicUrl;
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("images")
+        .getPublicUrl(fileName);
+
+      // Save generation metadata
+      const { data: generationData, error: generationError } = await supabase
+        .from("art_generations")
+        .insert([
+          {
+            prompt: params.prompt,
+            result_url: urlData.publicUrl,
+            metadata: {
+              model: params.model,
+              guidance: params.guidance,
+              seed: params.seed,
+              negative_prompt: params.negativePrompt,
+              style_preset: params.stylePreset,
+              style_strength: params.styleStrength,
+            },
+          },
+        ])
+        .select()
+        .single();
+
+      if (generationError) throw generationError;
+
+      if (onProgress) onProgress(100);
+
+      return {
+        url: urlData.publicUrl,
+        seed: params.seed || Math.floor(Math.random() * 1000000),
+        prompt: params.prompt,
+        model: params.model,
+        stylePreset: params.stylePreset,
+        metadata: generationData.metadata,
+      };
     } catch (error) {
+      if (error instanceof AIGenerationError) throw error;
       throw new AIGenerationError(
-        "Failed to upload generated image",
+        "Failed to generate or save image",
         "UNKNOWN",
         error,
       );
@@ -176,17 +170,3 @@ export class AIService {
 }
 
 export const aiService = new AIService();
-
-export type GenerationParams = {
-  model: string;
-  prompt: string;
-  negativePrompt?: string;
-  guidance: number;
-  seed?: number;
-  batchSize?: number;
-};
-
-export type GenerationResult = {
-  url: string;
-  params: GenerationParams;
-};

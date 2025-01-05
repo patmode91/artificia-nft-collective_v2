@@ -3,64 +3,83 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ImageIcon, CheckCircle2, Tags, Eye, Loader2 } from "lucide-react";
+import {
+  ImageIcon,
+  CheckCircle2,
+  Tags,
+  Eye,
+  Loader2,
+  Download,
+  Share2,
+} from "lucide-react";
 import AIModelSelector from "./AIModelSelector";
+import { useAI } from "@/lib/hooks/useAI";
+import { GenerationResult } from "@/lib/models";
 
 interface ContentGenerationPanelProps {
   artProgress?: number;
   qualityScore?: number;
-  generatedImages?: Array<{
-    id: string;
-    url: string;
-    metadata: Record<string, string>;
-  }>;
 }
 
 const ContentGenerationPanel = ({
   artProgress: initialProgress = 0,
   qualityScore = 87,
-  generatedImages: initialImages = [],
 }: ContentGenerationPanelProps) => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [artProgress, setArtProgress] = useState(initialProgress);
-  const [generatedImages, setGeneratedImages] = useState(initialImages);
+  const { generate, isLoading, error, progress, results } = useAI();
+  const [activeTab, setActiveTab] = useState("progress");
+  const [generatedImages, setGeneratedImages] = useState<GenerationResult[]>(
+    [],
+  );
 
   const handleGenerate = async (settings: any) => {
-    setIsGenerating(true);
-    setArtProgress(0);
+    try {
+      const newResults = await generate({
+        ...settings,
+        batchSize: settings.batchSize || 1,
+      });
 
-    // Simulate generation process
-    const totalSteps = settings.batchSize;
-    for (let i = 0; i < totalSteps; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setArtProgress((prev) => prev + 100 / totalSteps);
-
-      // Add a placeholder image
-      setGeneratedImages((prev) => [
-        ...prev,
-        {
-          id: `${Date.now()}-${i}`,
-          url: `https://picsum.photos/400/400?random=${Math.random()}`,
-          metadata: {
-            model: settings.model,
-            style: settings.style,
-            prompt: settings.prompt.substring(0, 30) + "...",
-          },
-        },
-      ]);
+      setGeneratedImages((prev) => [...newResults, ...prev]);
+      setActiveTab("preview"); // Switch to preview tab after generation
+    } catch (err) {
+      console.error("Generation error:", err);
     }
+  };
 
-    setIsGenerating(false);
+  const handleDownload = async (url: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `generated-${Date.now()}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      console.error("Download error:", err);
+    }
+  };
+
+  const handleShare = async (image: GenerationResult) => {
+    try {
+      await navigator.share({
+        title: "Generated Image",
+        text: image.prompt,
+        url: image.url,
+      });
+    } catch (err) {
+      console.error("Share error:", err);
+    }
   };
 
   return (
     <div className="p-6 bg-background w-full h-full">
       <h1 className="text-2xl font-bold mb-6">Content Generation Panel</h1>
 
-      <Tabs defaultValue="progress" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4 mb-6">
           <TabsTrigger value="progress">
             <ImageIcon className="mr-2 h-4 w-4" />
@@ -83,14 +102,15 @@ const ContentGenerationPanel = ({
         <TabsContent value="progress" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <AIModelSelector onGenerate={handleGenerate} />
+
             <Card className="p-6">
               <h3 className="text-lg font-semibold mb-4">
                 Generation Progress
               </h3>
-              <Progress value={artProgress} className="w-full" />
+              <Progress value={progress} className="w-full" />
               <div className="mt-2 flex items-center justify-between text-sm text-muted-foreground">
-                <span>{Math.round(artProgress)}% Complete</span>
-                {isGenerating && (
+                <span>{Math.round(progress)}% Complete</span>
+                {isLoading && (
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     Generating...
@@ -113,23 +133,6 @@ const ContentGenerationPanel = ({
           </Card>
         </TabsContent>
 
-        <TabsContent value="metadata" className="space-y-4">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Metadata Management</h3>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="style">Style</Label>
-                <Input id="style" placeholder="Enter art style" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="tags">Tags</Label>
-                <Input id="tags" placeholder="Enter tags (comma separated)" />
-              </div>
-              <Button className="w-full">Update Metadata</Button>
-            </div>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="preview" className="space-y-4">
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">
@@ -137,20 +140,43 @@ const ContentGenerationPanel = ({
             </h3>
             <ScrollArea className="h-[600px] w-full rounded-md border p-4">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {generatedImages.map((image) => (
-                  <div key={image.id} className="space-y-2">
-                    <img
-                      src={image.url}
-                      alt={`Generated art ${image.id}`}
-                      className="w-full aspect-square object-cover rounded-lg"
-                    />
+                {generatedImages.map((image, index) => (
+                  <div key={`${image.url}-${index}`} className="space-y-2">
+                    <div className="relative group">
+                      <img
+                        src={image.url}
+                        alt={`Generated art ${index + 1}`}
+                        className="w-full aspect-square object-cover rounded-lg"
+                      />
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-white hover:text-white hover:bg-white/20"
+                          onClick={() => handleDownload(image.url)}
+                        >
+                          <Download className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="text-white hover:text-white hover:bg-white/20"
+                          onClick={() => handleShare(image)}
+                        >
+                          <Share2 className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
                     <div className="text-sm space-y-1">
-                      {Object.entries(image.metadata).map(([key, value]) => (
-                        <div key={key} className="flex justify-between">
-                          <span className="font-medium capitalize">{key}:</span>
-                          <span className="text-muted-foreground">{value}</span>
-                        </div>
-                      ))}
+                      <p className="font-medium line-clamp-1">{image.prompt}</p>
+                      <p className="text-muted-foreground text-xs">
+                        Model: {image.model} • Seed: {image.seed}
+                      </p>
+                      {image.stylePreset && (
+                        <p className="text-muted-foreground text-xs">
+                          Style: {image.stylePreset}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}

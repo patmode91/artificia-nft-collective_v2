@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -17,11 +17,13 @@ import {
   Image as ImageIcon,
   Settings2,
   AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AI_MODELS, STYLE_PRESETS, VALIDATION } from "@/lib/models";
+import { AI_MODELS, VALIDATION } from "@/lib/models";
 import { useAI } from "@/lib/hooks/useAI";
+import { StyleSystem } from "./StyleSystem";
 
 interface AIModelSelectorProps {
   onGenerate?: (settings: {
@@ -38,12 +40,13 @@ interface AIModelSelectorProps {
 
 const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
   const { generate, isLoading, error, progress } = useAI();
-  const [settings, setSettings] = React.useState({
+  const [settings, setSettings] = useState({
     model: AI_MODELS[0].id,
     prompt: "",
     negativePrompt: "",
     guidance: VALIDATION.guidance.default,
-    style: STYLE_PRESETS[0].id,
+    selectedStyles: [] as string[],
+    styleStrength: VALIDATION.styleStrength.default,
     batchSize: VALIDATION.batchSize.default,
     variations: VALIDATION.variations.default,
     seed: Math.floor(Math.random() * 1000000),
@@ -51,29 +54,40 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
 
   // Get the selected model's configuration
   const selectedModel = AI_MODELS.find((m) => m.id === settings.model);
-  const selectedStyle = STYLE_PRESETS.find((s) => s.id === settings.style);
 
-  // Apply style preset
-  const handleStyleChange = (styleId: string) => {
-    const style = STYLE_PRESETS.find((s) => s.id === styleId);
-    if (style) {
-      setSettings((prev) => ({
+  // Handle style selection
+  const handleStyleSelect = (styleId: string) => {
+    setSettings((prev) => {
+      const currentStyles = prev.selectedStyles;
+      if (currentStyles.includes(styleId)) {
+        return {
+          ...prev,
+          selectedStyles: currentStyles.filter((id) => id !== styleId),
+        };
+      }
+      if (currentStyles.length >= 2) {
+        return {
+          ...prev,
+          selectedStyles: [currentStyles[1], styleId],
+        };
+      }
+      return {
         ...prev,
-        style: styleId,
-        prompt: `${prev.prompt}\n${style.prompt}`.trim(),
-        negativePrompt:
-          `${prev.negativePrompt}\n${style.negativePrompt}`.trim(),
-      }));
-    }
+        selectedStyles: [...currentStyles, styleId],
+      };
+    });
   };
 
   // Handle generation
   const handleGenerate = async () => {
     try {
-      const results = await generate(settings);
+      const results = await generate({
+        ...settings,
+        stylePreset: settings.selectedStyles[0],
+        styleStrength: settings.styleStrength,
+      });
       onGenerate(settings);
     } catch (err) {
-      // Error is handled by the useAI hook and displayed below
       console.error(err);
     }
   };
@@ -112,28 +126,19 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
                 ))}
               </SelectContent>
             </Select>
-            {selectedModel && (
-              <p className="text-sm text-muted-foreground">
-                Max batch size: {selectedModel.maxBatchSize}
-              </p>
-            )}
           </div>
 
-          <div className="space-y-2">
-            <Label>Style Preset</Label>
-            <Select value={settings.style} onValueChange={handleStyleChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select style" />
-              </SelectTrigger>
-              <SelectContent>
-                {STYLE_PRESETS.map((style) => (
-                  <SelectItem key={style.id} value={style.id}>
-                    {style.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <StyleSystem
+            selectedStyles={settings.selectedStyles}
+            styleStrength={settings.styleStrength}
+            onStyleSelect={handleStyleSelect}
+            onStyleStrengthChange={(value) =>
+              setSettings({ ...settings, styleStrength: value })
+            }
+            onStyleClear={() =>
+              setSettings({ ...settings, selectedStyles: [] })
+            }
+          />
 
           <div className="space-y-2">
             <Label>Prompt</Label>
@@ -147,11 +152,6 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
                 selectedModel?.maxPromptLength || VALIDATION.prompt.maxLength
               }
             />
-            <p className="text-sm text-muted-foreground">
-              {settings.prompt.length}/
-              {selectedModel?.maxPromptLength || VALIDATION.prompt.maxLength}{" "}
-              characters
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -197,19 +197,6 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
               value={[settings.batchSize]}
               onValueChange={([value]) =>
                 setSettings({ ...settings, batchSize: value })
-              }
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Variations per Image: {settings.variations}</Label>
-            <Slider
-              min={VALIDATION.variations.min}
-              max={VALIDATION.variations.max}
-              step={1}
-              value={[settings.variations]}
-              onValueChange={([value]) =>
-                setSettings({ ...settings, variations: value })
               }
             />
           </div>
@@ -260,10 +247,17 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
             settings.prompt.length < VALIDATION.prompt.minLength
           }
         >
-          <Wand2 className="w-4 h-4 mr-2" />
-          {isLoading
-            ? `Generating... ${Math.round(progress)}%`
-            : `Generate ${settings.batchSize} Images`}
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating... {Math.round(progress)}%
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate {settings.batchSize} Images
+            </>
+          )}
         </Button>
       </div>
     </Card>
