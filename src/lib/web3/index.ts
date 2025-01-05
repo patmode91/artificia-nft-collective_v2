@@ -45,6 +45,9 @@ export class Web3Service {
     const address = await this.signer.getAddress();
     const network = await this.provider.getNetwork();
 
+    // Handle Web3 state changes
+    this.handleStateChange();
+
     return {
       provider: this.provider,
       signer: this.signer,
@@ -77,6 +80,28 @@ export class Web3Service {
   getSigner(): ethers.Signer | null {
     return this.signer;
   }
+
+  private handleStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+      console.log("Web3 state updated");
+    } catch (error) {
+      console.error("Failed to update Web3 state:", error);
+    }
+  };
 }
 
 export const web3Service = new Web3Service();
+
+useEffect(() => {
+  const handleWeb3StateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+      console.log("Web3 state updated");
+    } catch (error) {
+      console.error("Failed to update Web3 state:", error);
+    }
+  };
+
+  handleWeb3StateChange();
+}, []);

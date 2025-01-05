@@ -1,0 +1,14 @@
+{
+  "scanSettings": {
+    "baseBranches": ["main", "develop"] // Branches to be scanned
+  },
+  "checkRunSettings": {
+    "vulnerableCheckRunConclusionLevel": "failure", // Fail check run on any vulnerability
+    "displayMode": "diff", // Display only changes
+    "useMendCheckNames": true // Use Mend check names
+  },
+  "issueSettings": {
+    "minSeverityLevel": "LOW", // Consider issues with severity level low and above
+    "issueType": "DEPENDENCY" // Focus on dependency-related issues
+  }
+}

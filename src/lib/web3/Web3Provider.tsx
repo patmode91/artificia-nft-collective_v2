@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Web3Context, web3Service } from ".";
 import { ethers } from "ethers";
+import { useAuth } from "../auth";
 
 interface Web3ProviderProps {
   children: ReactNode;
@@ -14,6 +15,7 @@ export function Web3Provider({ children }: Web3ProviderProps) {
   const [chainId, setChainId] = useState<number | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -52,6 +54,10 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       setIsConnecting(true);
       setError(null);
 
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
+
       const connection = await web3Service.connect();
       setProvider(connection.provider);
       setSigner(connection.signer);
@@ -72,6 +78,19 @@ export function Web3Provider({ children }: Web3ProviderProps) {
     setChainId(null);
     setError(null);
   };
+
+  useEffect(() => {
+    const handleWeb3StateChange = async () => {
+      try {
+        // Perform any necessary state updates here
+        console.log("Web3 state updated");
+      } catch (error) {
+        console.error("Failed to update Web3 state:", error);
+      }
+    };
+
+    handleWeb3StateChange();
+  }, []);
 
   return (
     <Web3Context.Provider

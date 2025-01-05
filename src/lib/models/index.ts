@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 // Available AI Models with tiered access
+=======
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 export const AI_MODELS = [
   // Free Models
   {
@@ -31,7 +34,31 @@ export const AI_MODELS = [
     maxPromptLength: 500,
     supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
   },
+<<<<<<< HEAD
   // Freemium Models
+=======
+  {
+    id: "dalle-mini",
+    name: "DALL-E Mini",
+    provider: "huggingface",
+    model: "dalle-mini/dalle-mini",
+    maxBatchSize: 4,
+    maxPromptLength: 500,
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+  },
+  {
+    id: "midjourney",
+    name: "MidJourney",
+    provider: "huggingface",
+    model: "midjourney/midjourney",
+    maxBatchSize: 4,
+    maxPromptLength: 500,
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+  },
+] as const;
+
+export const STYLE_PRESETS = [
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
   {
     id: "stable-diffusion-xl",
     name: "Stable Diffusion XL",
@@ -89,8 +116,21 @@ export const AI_MODELS = [
       "restore",
     ],
   },
+  {
+    id: "cyberpunk",
+    name: "Cyberpunk",
+    prompt: "cyberpunk style, futuristic, neon lights, high tech, dystopian",
+    negativePrompt: "natural, traditional, historical, low tech",
+  },
+  {
+    id: "fantasy",
+    name: "Fantasy",
+    prompt: "fantasy style, magical, mythical creatures, enchanted, vibrant",
+    negativePrompt: "realistic, modern, sci-fi, mundane",
+  },
 ] as const;
 
+<<<<<<< HEAD
 // Image Editing Features
 export const EDITING_FEATURES = {
   inpaint: {
@@ -162,6 +202,8 @@ export const LORA_CONFIG = {
 };
 
 // Validation parameters
+=======
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 export const VALIDATION = {
   prompt: {
     minLength: 3,

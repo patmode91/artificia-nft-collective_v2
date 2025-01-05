@@ -1,6 +1,12 @@
 import { HfInference } from "@huggingface/inference";
+<<<<<<< HEAD
 import { GenerationParams, GenerationResult, AI_MODELS } from "../models";
 import { supabase } from "../supabase";
+=======
+import { AI_MODELS } from "../models";
+import { supabase } from "../api-client";
+import { useEffect } from "react";
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
 class AIGenerationError extends Error {
   constructor(
@@ -22,7 +28,11 @@ export class AIService {
   private hf: HfInference;
   private rateLimitCounter: Map<string, { count: number; resetTime: number }> =
     new Map();
+<<<<<<< HEAD
   private interrupted = false;
+=======
+  private interrupted: boolean = false;
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
   constructor() {
     this.hf = new HfInference(import.meta.env.VITE_HUGGINGFACE_API_KEY);
@@ -170,3 +180,32 @@ export class AIService {
 }
 
 export const aiService = new AIService();
+<<<<<<< HEAD
+=======
+
+export type GenerationParams = {
+  model: string;
+  prompt: string;
+  negativePrompt?: string;
+  guidance: number;
+  seed?: number;
+  batchSize?: number;
+};
+
+export type GenerationResult = {
+  url: string;
+  params: GenerationParams;
+};
+
+useEffect(() => {
+  const handleAIServiceStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+    } catch (error) {
+      console.error("Failed to update AI service state:", error);
+    }
+  };
+
+  handleAIServiceStateChange();
+}, []);
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95

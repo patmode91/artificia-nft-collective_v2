@@ -17,12 +17,21 @@ class ErrorBoundary extends React.Component<Props, State> {
     hasError: false,
   };
 
+  // Update state to indicate an error has occurred
   public static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
+  // Log error details for debugging
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+  }
+
+  // Reset error state when component updates
+  public componentDidUpdate(prevProps: Props, prevState: State) {
+    if (prevState.hasError && !this.state.hasError) {
+      console.log("Error state has been reset");
+    }
   }
 
   public render() {

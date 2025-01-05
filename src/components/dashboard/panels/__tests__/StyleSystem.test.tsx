@@ -68,4 +68,59 @@ describe("StyleSystem", () => {
 
     expect(screen.getByText(/Maximum 2 styles/i)).toBeInTheDocument();
   });
+
+  it("should handle style removal", async () => {
+    render(<StyleSystem onChange={mockOnChange} />);
+
+    // Select a style
+    const style1 = STYLE_PRESETS[0].name;
+    fireEvent.click(screen.getByText(style1));
+
+    // Remove the style
+    fireEvent.click(screen.getByText(style1));
+
+    await waitFor(() => {
+      expect(mockOnChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          styles: [],
+        }),
+      );
+    });
+  });
+
+  it("should handle style reset", async () => {
+    render(<StyleSystem onChange={mockOnChange} />);
+
+    // Select a style
+    const style1 = STYLE_PRESETS[0].name;
+    fireEvent.click(screen.getByText(style1));
+
+    // Reset styles
+    const resetButton = screen.getByText(/Reset Styles/i);
+    fireEvent.click(resetButton);
+
+    await waitFor(() => {
+      expect(mockOnChange).toHaveBeenCalledWith(
+        expect.objectContaining({
+          styles: [],
+        }),
+      );
+    });
+  });
+
+  it("should handle style preview", async () => {
+    render(<StyleSystem onChange={mockOnChange} />);
+
+    // Select a style
+    const style1 = STYLE_PRESETS[0].name;
+    fireEvent.click(screen.getByText(style1));
+
+    // Preview style
+    const previewButton = screen.getByText(/Preview Style/i);
+    fireEvent.click(previewButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Previewing/i)).toBeInTheDocument();
+    });
+  });
 });

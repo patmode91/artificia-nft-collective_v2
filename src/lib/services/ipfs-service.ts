@@ -1,5 +1,9 @@
 import { create, IPFSHTTPClient } from "ipfs-http-client";
+<<<<<<< HEAD
 import { Buffer } from "buffer";
+=======
+import { useEffect } from "react";
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
 class IPFSService {
   private client: IPFSHTTPClient;
@@ -28,6 +32,7 @@ class IPFSService {
     size: number;
   }> {
     try {
+<<<<<<< HEAD
       const added = await this.client.add(file, {
         progress: (prog) => console.log(`Upload progress: ${prog}`),
       });
@@ -37,6 +42,11 @@ class IPFSService {
         url: `${this.gateway}/${added.cid.toString()}`,
         size: added.size,
       };
+=======
+      const added = await this.client.add(file);
+      this.handleStateChange(); // Call handleStateChange after uploading file
+      return `ipfs://${added.path}`;
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
     } catch (error) {
       console.error("IPFS upload error:", error);
       throw new Error("Failed to upload file to IPFS");
@@ -91,6 +101,28 @@ class IPFSService {
       return false;
     }
   }
+
+  private handleStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+      console.log("IPFS state updated");
+    } catch (error) {
+      console.error("Failed to update IPFS state:", error);
+    }
+  };
 }
 
 export const ipfsService = new IPFSService();
+
+useEffect(() => {
+  const handleIPFSStateChange = async () => {
+    try {
+      // Perform any necessary state updates here
+      console.log("IPFS state updated");
+    } catch (error) {
+      console.error("Failed to update IPFS state:", error);
+    }
+  };
+
+  handleIPFSStateChange();
+}, []);

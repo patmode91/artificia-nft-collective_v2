@@ -14,12 +14,20 @@ import {
   Share2,
 } from "lucide-react";
 import AIModelSelector from "./AIModelSelector";
+<<<<<<< HEAD
 import { useAI } from "@/lib/hooks/useAI";
 import { GenerationResult } from "@/lib/models";
+=======
+import { GenerationResult } from "@/lib/api-client";
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
 interface ContentGenerationPanelProps {
   artProgress?: number;
   qualityScore?: number;
+<<<<<<< HEAD
+=======
+  generatedImages?: Array<GenerationResult>;
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 }
 
 const ContentGenerationPanel = ({
@@ -32,6 +40,7 @@ const ContentGenerationPanel = ({
     [],
   );
 
+  // Handle the generation process
   const handleGenerate = async (settings: any) => {
     try {
       const newResults = await generate({
@@ -39,6 +48,7 @@ const ContentGenerationPanel = ({
         batchSize: settings.batchSize || 1,
       });
 
+<<<<<<< HEAD
       setGeneratedImages((prev) => [...newResults, ...prev]);
       setActiveTab("preview"); // Switch to preview tab after generation
     } catch (err) {
@@ -73,6 +83,16 @@ const ContentGenerationPanel = ({
     } catch (err) {
       console.error("Share error:", err);
     }
+=======
+    try {
+      const results = await generate(settings);
+      setGeneratedImages(results);
+    } catch (error) {
+      console.error("Generation error:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
   };
 
   return (

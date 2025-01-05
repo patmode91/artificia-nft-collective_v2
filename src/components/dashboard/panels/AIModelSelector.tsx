@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
+=======
+import React, { useEffect, useState } from "react";
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -51,6 +55,18 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
     variations: VALIDATION.variations.default,
     seed: Math.floor(Math.random() * 1000000),
   });
+
+  useEffect(() => {
+    const selectedModel = AI_MODELS.find((m) => m.id === settings.model);
+    const selectedStyle = STYLE_PRESETS.find((s) => s.id === settings.style);
+    if (selectedModel && selectedStyle) {
+      setSettings((prev) => ({
+        ...prev,
+        prompt: `${prev.prompt}\n${selectedStyle.prompt}`.trim(),
+        negativePrompt: `${prev.negativePrompt}\n${selectedStyle.negativePrompt}`.trim(),
+      }));
+    }
+  }, [settings.model, settings.style]);
 
   // Get the selected model's configuration
   const selectedModel = AI_MODELS.find((m) => m.id === settings.model);
@@ -249,12 +265,20 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
         >
           {isLoading ? (
             <>
+<<<<<<< HEAD
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+=======
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
               Generating... {Math.round(progress)}%
             </>
           ) : (
             <>
+<<<<<<< HEAD
               <Wand2 className="mr-2 h-4 w-4" />
+=======
+              <Wand2 className="w-4 h-4 mr-2" />
+>>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
               Generate {settings.batchSize} Images
             </>
           )}

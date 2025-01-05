@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import ContentGenerationPanel from "./panels/ContentGenerationPanel";
@@ -18,6 +18,7 @@ interface ContentPanelProps {
     | "agent-control";
 }
 
+// Loading fallback component to show a spinner while content is loading
 const LoadingFallback = () => (
   <Card className="flex h-full w-full items-center justify-center">
     <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -26,8 +27,16 @@ const LoadingFallback = () => (
 
 const ContentPanel = ({ activePanel: propActivePanel }: ContentPanelProps) => {
   const { section } = useParams();
-  const activePanel = propActivePanel || section || "content-generation";
+  const [activePanel, setActivePanel] = useState(
+    propActivePanel || section || "content-generation"
+  );
 
+  // Update active panel when propActivePanel or section changes
+  useEffect(() => {
+    setActivePanel(propActivePanel || section || "content-generation");
+  }, [propActivePanel, section]);
+
+  // Render the appropriate panel based on the activePanel state
   const renderPanel = () => {
     const Panel = (() => {
       switch (activePanel) {

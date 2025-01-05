@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { ipfsService } from "../services/ipfs-service";
+import { useEffect } from "react";
 
 const NFT_ABI = [
   "function mint(address to, string memory uri) public returns (uint256)",
@@ -53,10 +54,42 @@ export class NFTContract {
   }
 
   async getTokenURI(tokenId: string): Promise<string> {
-    return await this.contract.tokenURI(tokenId);
+    try {
+      return await this.contract.tokenURI(tokenId);
+    } catch (error) {
+      console.error("Failed to get token URI:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to get token URI",
+      );
+    }
   }
 
   async getOwner(tokenId: string): Promise<string> {
-    return await this.contract.ownerOf(tokenId);
+    try {
+      return await this.contract.ownerOf(tokenId);
+    } catch (error) {
+      console.error("Failed to get owner:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to get owner",
+      );
+    }
   }
 }
+
+// Add useEffect hook to handle contract state changes
+useEffect(() => {
+  const handleStateChange = async () => {
+    try {
+      const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+      const signer = web3Service.getSigner();
+      if (contractAddress && signer) {
+        const contract = new NFTContract(contractAddress, signer);
+        // Perform any necessary state updates here
+      }
+    } catch (error) {
+      console.error("Failed to update contract state:", error);
+    }
+  };
+
+  handleStateChange();
+}, []);

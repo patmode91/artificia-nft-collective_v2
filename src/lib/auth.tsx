@@ -9,6 +9,8 @@ type AuthContextType = {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
+  hasAccess: (endpoint: string) => boolean;
+  error: string | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,12 +19,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
+    }).catch((err) => {
+      setError(err.message);
       setLoading(false);
     });
 
@@ -38,30 +44,69 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const handleAuthStateChange = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setSession(session);
+        setUser(session?.user ?? null);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    handleAuthStateChange();
+  }, []);
+
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
   };
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
+  const hasAccess = (endpoint: string) => {
+    // Implement your access control logic here
+    // For example, you can check user roles or permissions
+    if (!user) return false;
+    // Example: Allow access to all endpoints for authenticated users
+    return true;
   };
 
   return (
     <AuthContext.Provider
-      value={{ session, user, signIn, signUp, signOut, loading }}
+      value={{ session, user, signIn, signUp, signOut, loading, hasAccess, error }}
     >
       {children}
     </AuthContext.Provider>
