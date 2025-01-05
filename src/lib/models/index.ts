@@ -1,95 +1,165 @@
-// Available AI Models
+// Available AI Models with tiered access
 export const AI_MODELS = [
+  // Free Models
   {
     id: "stable-diffusion-v1.5",
     name: "Stable Diffusion v1.5",
+    tier: "free",
     provider: "huggingface",
     model: "runwayml/stable-diffusion-v1-5",
     maxBatchSize: 4,
     maxPromptLength: 500,
-    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed", "lora"],
   },
   {
     id: "stable-diffusion-v2.1",
     name: "Stable Diffusion v2.1",
+    tier: "free",
     provider: "huggingface",
     model: "stabilityai/stable-diffusion-2-1",
     maxBatchSize: 4,
     maxPromptLength: 500,
-    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed", "lora"],
   },
   {
-    id: "kandinsky-2.2",
-    name: "Kandinsky v2.2",
+    id: "compvis",
+    name: "CompVis",
+    tier: "free",
     provider: "huggingface",
-    model: "kandinsky-community/kandinsky-2-2-decoder",
-    maxBatchSize: 2,
-    maxPromptLength: 300,
-    supportedFeatures: ["negative_prompt", "guidance_scale"],
+    model: "CompVis/stable-diffusion-v1-4",
+    maxBatchSize: 4,
+    maxPromptLength: 500,
+    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
+  },
+  // Freemium Models
+  {
+    id: "stable-diffusion-xl",
+    name: "Stable Diffusion XL",
+    tier: "freemium",
+    provider: "stability",
+    model: "stable-diffusion-xl-1024-v1-0",
+    maxBatchSize: 4,
+    maxPromptLength: 1000,
+    supportedFeatures: [
+      "negative_prompt",
+      "guidance_scale",
+      "seed",
+      "lora",
+      "inpaint",
+      "upscale",
+    ],
+  },
+  {
+    id: "midjourney",
+    name: "Midjourney",
+    tier: "freemium",
+    provider: "midjourney",
+    maxBatchSize: 4,
+    maxPromptLength: 1000,
+    supportedFeatures: ["style_transfer", "upscale", "variations"],
+  },
+  // Premium Models
+  {
+    id: "dalle3",
+    name: "DALL-E 3",
+    tier: "premium",
+    provider: "openai",
+    maxBatchSize: 4,
+    maxPromptLength: 4000,
+    supportedFeatures: [
+      "negative_prompt",
+      "style_transfer",
+      "inpaint",
+      "edit",
+      "variations",
+    ],
+  },
+  {
+    id: "firefly",
+    name: "Adobe Firefly",
+    tier: "premium",
+    provider: "adobe",
+    maxBatchSize: 4,
+    maxPromptLength: 4000,
+    supportedFeatures: [
+      "style_transfer",
+      "inpaint",
+      "edit",
+      "upscale",
+      "restore",
+    ],
   },
 ] as const;
 
-// Style Presets with enhanced descriptions and optimized prompts
-export const STYLE_PRESETS = [
-  {
-    id: "realistic",
-    name: "Realistic",
-    description: "Photorealistic style with high detail and natural lighting",
-    prompt:
-      "masterpiece, highly detailed, photorealistic, 8k resolution, professional photography",
-    negativePrompt:
-      "cartoon, anime, illustration, painting, drawing, artificial, fake, low quality",
-    previewUrl: "https://example.com/realistic-preview.jpg",
+// Image Editing Features
+export const EDITING_FEATURES = {
+  inpaint: {
+    id: "inpaint",
+    name: "Inpainting",
+    description: "Edit specific areas of the image using a brush",
+    tools: ["brush", "eraser", "size", "hardness"],
   },
-  {
-    id: "anime",
-    name: "Anime",
-    description: "Japanese animation style with vibrant colors",
-    prompt:
-      "masterpiece, best quality, anime style, highly detailed, vibrant colors, sharp lines",
-    negativePrompt:
-      "photorealistic, photograph, 3d, western style, blurry, low quality",
-    previewUrl: "https://example.com/anime-preview.jpg",
+  replace: {
+    id: "replace",
+    name: "Object Replacement",
+    description: "Replace selected objects with new content",
+    tools: ["smart_select", "magic_wand", "lasso"],
   },
-  {
-    id: "digital-art",
-    name: "Digital Art",
-    description: "Modern digital art style with rich colors and details",
-    prompt:
-      "digital art, masterpiece, highly detailed, sharp focus, vibrant colors, artistic rendering",
-    negativePrompt:
-      "photograph, realistic, noisy, blurry, low quality, sketch, rough",
-    previewUrl: "https://example.com/digital-art-preview.jpg",
+  background: {
+    id: "background",
+    name: "Background Manipulation",
+    description: "Edit or replace image backgrounds",
+    tools: ["auto_mask", "refine_edge", "feather"],
   },
-  {
-    id: "abstract",
-    name: "Abstract",
-    description: "Non-representational art with bold shapes and colors",
-    prompt:
-      "abstract art masterpiece, non-representational, geometric shapes, bold colors, modern art",
-    negativePrompt:
-      "realistic, recognizable objects, faces, natural, photographic",
-    previewUrl: "https://example.com/abstract-preview.jpg",
+  mask: {
+    id: "mask",
+    name: "Smart Masking",
+    description: "AI-powered selection and masking tools",
+    tools: ["subject_select", "sky_select", "portrait_select"],
   },
-  {
-    id: "cyberpunk",
-    name: "Cyberpunk",
-    description: "Futuristic dystopian style with neon colors",
-    prompt:
-      "cyberpunk, neon lights, futuristic, dystopian, high tech, masterpiece, highly detailed",
-    negativePrompt: "natural, vintage, rustic, organic, low tech",
-    previewUrl: "https://example.com/cyberpunk-preview.jpg",
+};
+
+// Enhancement Tools
+export const ENHANCEMENT_TOOLS = {
+  upscale: {
+    id: "upscale",
+    name: "AI Upscaling",
+    description: "Increase image resolution while maintaining quality",
+    scales: [2, 4, 8],
+    models: ["real-esrgan", "stable-diffusion-upscale"],
   },
-  {
-    id: "fantasy",
-    name: "Fantasy",
-    description: "Magical and ethereal fantasy art style",
-    prompt:
-      "fantasy art, magical, ethereal, mystical, masterpiece, highly detailed, dramatic lighting",
-    negativePrompt: "modern, urban, realistic, mundane, photographic",
-    previewUrl: "https://example.com/fantasy-preview.jpg",
+  style: {
+    id: "style",
+    name: "Style Transfer",
+    description: "Apply artistic styles to images",
+    models: ["stable-diffusion", "midjourney", "firefly"],
   },
-] as const;
+  restore: {
+    id: "restore",
+    name: "Image Restoration",
+    description: "Fix and enhance image quality",
+    features: ["denoise", "deblur", "enhance"],
+  },
+  color: {
+    id: "color",
+    name: "Color Correction",
+    description: "Adjust and enhance image colors",
+    tools: ["auto", "manual", "selective"],
+  },
+};
+
+// LoRA Models Configuration
+export const LORA_CONFIG = {
+  maxSize: 100 * 1024 * 1024, // 100MB
+  supportedFormats: [".safetensors", ".ckpt", ".pt"],
+  compatibleModels: [
+    "stable-diffusion-v1.5",
+    "stable-diffusion-v2.1",
+    "stable-diffusion-xl",
+  ],
+  maxTokens: 77,
+  defaultAlpha: 0.75,
+};
 
 // Validation parameters
 export const VALIDATION = {
@@ -125,10 +195,16 @@ export const VALIDATION = {
     default: 0.7,
     step: 0.1,
   },
+  loraScale: {
+    min: 0,
+    max: 2,
+    default: 0.75,
+    step: 0.05,
+  },
 };
 
-// Generation Parameters Interface
-export interface GenerationParams {
+// Types
+export interface GenerationParams extends BaseGenerationParams {
   model: string;
   prompt: string;
   negativePrompt?: string;
@@ -137,9 +213,30 @@ export interface GenerationParams {
   batchSize: number;
   stylePreset?: string;
   styleStrength?: number;
+  lora?: LoRAParams;
+  editing?: EditingParams;
+  enhancement?: EnhancementParams;
 }
 
-// Generation Result Interface
+export interface LoRAParams {
+  model: string;
+  scale: number;
+  triggerWords?: string[];
+}
+
+export interface EditingParams {
+  type: keyof typeof EDITING_FEATURES;
+  mask?: string;
+  prompt?: string;
+  settings?: Record<string, any>;
+}
+
+export interface EnhancementParams {
+  type: keyof typeof ENHANCEMENT_TOOLS;
+  scale?: number;
+  settings?: Record<string, any>;
+}
+
 export interface GenerationResult {
   url: string;
   seed: number;
@@ -147,4 +244,6 @@ export interface GenerationResult {
   model: string;
   stylePreset?: string;
   metadata: Record<string, any>;
+  editingHistory?: EditingParams[];
+  enhancementHistory?: EnhancementParams[];
 }
