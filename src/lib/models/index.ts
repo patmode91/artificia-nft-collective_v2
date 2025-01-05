@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-// Available AI Models with tiered access
-=======
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 export const AI_MODELS = [
-  // Free Models
   {
     id: "stable-diffusion-v1.5",
     name: "Stable Diffusion v1.5",
@@ -34,31 +29,6 @@ export const AI_MODELS = [
     maxPromptLength: 500,
     supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
   },
-<<<<<<< HEAD
-  // Freemium Models
-=======
-  {
-    id: "dalle-mini",
-    name: "DALL-E Mini",
-    provider: "huggingface",
-    model: "dalle-mini/dalle-mini",
-    maxBatchSize: 4,
-    maxPromptLength: 500,
-    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
-  },
-  {
-    id: "midjourney",
-    name: "MidJourney",
-    provider: "huggingface",
-    model: "midjourney/midjourney",
-    maxBatchSize: 4,
-    maxPromptLength: 500,
-    supportedFeatures: ["negative_prompt", "guidance_scale", "seed"],
-  },
-] as const;
-
-export const STYLE_PRESETS = [
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
   {
     id: "stable-diffusion-xl",
     name: "Stable Diffusion XL",
@@ -85,7 +55,6 @@ export const STYLE_PRESETS = [
     maxPromptLength: 1000,
     supportedFeatures: ["style_transfer", "upscale", "variations"],
   },
-  // Premium Models
   {
     id: "dalle3",
     name: "DALL-E 3",
@@ -116,94 +85,43 @@ export const STYLE_PRESETS = [
       "restore",
     ],
   },
+] as const;
+
+export const STYLE_PRESETS = [
   {
     id: "cyberpunk",
     name: "Cyberpunk",
     prompt: "cyberpunk style, futuristic, neon lights, high tech, dystopian",
     negativePrompt: "natural, traditional, historical, low tech",
+    previewUrl: "/images/styles/cyberpunk.jpg",
+    description: "A futuristic style with neon lights and high tech elements.",
   },
   {
     id: "fantasy",
     name: "Fantasy",
     prompt: "fantasy style, magical, mythical creatures, enchanted, vibrant",
     negativePrompt: "realistic, modern, sci-fi, mundane",
+    previewUrl: "/images/styles/fantasy.jpg",
+    description: "A magical style with mythical creatures and vibrant colors.",
+  },
+  {
+    id: "noir",
+    name: "Noir",
+    prompt: "noir style, black and white, high contrast, moody, vintage",
+    negativePrompt: "colorful, modern, bright, cheerful",
+    previewUrl: "/images/styles/noir.jpg",
+    description: "A moody black and white style with high contrast.",
+  },
+  {
+    id: "abstract",
+    name: "Abstract",
+    prompt: "abstract style, geometric shapes, bold colors, non-representational",
+    negativePrompt: "realistic, detailed, representational, traditional",
+    previewUrl: "/images/styles/abstract.jpg",
+    description: "A non-representational style with geometric shapes and bold colors.",
   },
 ] as const;
 
-<<<<<<< HEAD
-// Image Editing Features
-export const EDITING_FEATURES = {
-  inpaint: {
-    id: "inpaint",
-    name: "Inpainting",
-    description: "Edit specific areas of the image using a brush",
-    tools: ["brush", "eraser", "size", "hardness"],
-  },
-  replace: {
-    id: "replace",
-    name: "Object Replacement",
-    description: "Replace selected objects with new content",
-    tools: ["smart_select", "magic_wand", "lasso"],
-  },
-  background: {
-    id: "background",
-    name: "Background Manipulation",
-    description: "Edit or replace image backgrounds",
-    tools: ["auto_mask", "refine_edge", "feather"],
-  },
-  mask: {
-    id: "mask",
-    name: "Smart Masking",
-    description: "AI-powered selection and masking tools",
-    tools: ["subject_select", "sky_select", "portrait_select"],
-  },
-};
-
-// Enhancement Tools
-export const ENHANCEMENT_TOOLS = {
-  upscale: {
-    id: "upscale",
-    name: "AI Upscaling",
-    description: "Increase image resolution while maintaining quality",
-    scales: [2, 4, 8],
-    models: ["real-esrgan", "stable-diffusion-upscale"],
-  },
-  style: {
-    id: "style",
-    name: "Style Transfer",
-    description: "Apply artistic styles to images",
-    models: ["stable-diffusion", "midjourney", "firefly"],
-  },
-  restore: {
-    id: "restore",
-    name: "Image Restoration",
-    description: "Fix and enhance image quality",
-    features: ["denoise", "deblur", "enhance"],
-  },
-  color: {
-    id: "color",
-    name: "Color Correction",
-    description: "Adjust and enhance image colors",
-    tools: ["auto", "manual", "selective"],
-  },
-};
-
-// LoRA Models Configuration
-export const LORA_CONFIG = {
-  maxSize: 100 * 1024 * 1024, // 100MB
-  supportedFormats: [".safetensors", ".ckpt", ".pt"],
-  compatibleModels: [
-    "stable-diffusion-v1.5",
-    "stable-diffusion-v2.1",
-    "stable-diffusion-xl",
-  ],
-  maxTokens: 77,
-  defaultAlpha: 0.75,
-};
-
-// Validation parameters
-=======
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 export const VALIDATION = {
   prompt: {
     minLength: 3,
@@ -245,7 +163,6 @@ export const VALIDATION = {
   },
 };
 
-// Types
 export interface GenerationParams extends BaseGenerationParams {
   model: string;
   prompt: string;

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
-=======
 import React, { useEffect, useState } from "react";
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -25,7 +21,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AI_MODELS, VALIDATION } from "@/lib/models";
+import { AI_MODELS, VALIDATION, STYLE_PRESETS } from "@/lib/models";
 import { useAI } from "@/lib/hooks/useAI";
 import { StyleSystem } from "./StyleSystem";
 
@@ -90,7 +86,7 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
       return {
         ...prev,
         selectedStyles: [...currentStyles, styleId],
-      };
+      });
     });
   };
 
@@ -265,20 +261,12 @@ const AIModelSelector = ({ onGenerate = () => {} }: AIModelSelectorProps) => {
         >
           {isLoading ? (
             <>
-<<<<<<< HEAD
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-=======
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
               Generating... {Math.round(progress)}%
             </>
           ) : (
             <>
-<<<<<<< HEAD
-              <Wand2 className="mr-2 h-4 w-4" />
-=======
               <Wand2 className="w-4 h-4 mr-2" />
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
               Generate {settings.batchSize} Images
             </>
           )}
