@@ -54,11 +54,25 @@ export class NFTContract {
   }
 
   async getTokenURI(tokenId: string): Promise<string> {
-    return await this.contract.tokenURI(tokenId);
+    try {
+      return await this.contract.tokenURI(tokenId);
+    } catch (error) {
+      console.error("Failed to get token URI:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to get token URI",
+      );
+    }
   }
 
   async getOwner(tokenId: string): Promise<string> {
-    return await this.contract.ownerOf(tokenId);
+    try {
+      return await this.contract.ownerOf(tokenId);
+    } catch (error) {
+      console.error("Failed to get owner:", error);
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to get owner",
+      );
+    }
   }
 }
 

@@ -79,6 +79,19 @@ export function Web3Provider({ children }: Web3ProviderProps) {
     setError(null);
   };
 
+  useEffect(() => {
+    const handleWeb3StateChange = async () => {
+      try {
+        // Perform any necessary state updates here
+        console.log("Web3 state updated");
+      } catch (error) {
+        console.error("Failed to update Web3 state:", error);
+      }
+    };
+
+    handleWeb3StateChange();
+  }, []);
+
   return (
     <Web3Context.Provider
       value={{

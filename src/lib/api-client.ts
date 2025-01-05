@@ -49,7 +49,13 @@ api.interceptors.response.use(
           return api(originalRequest);
         }
       } catch (refreshError) {
-        return Promise.reject(refreshError);
+        // Add error handling for token refresh
+        const enhancedError = new Error(
+          refreshError.response?.data?.message || "Token refresh failed",
+        );
+        enhancedError.code = refreshError.response?.status;
+        enhancedError.details = refreshError.response?.data;
+        return Promise.reject(enhancedError);
       }
     }
 

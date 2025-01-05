@@ -38,6 +38,7 @@ export class AIService {
   private hf: HfInference;
   private rateLimitCounter: Map<string, { count: number; resetTime: number }> =
     new Map();
+  private interrupted: boolean = false;
 
   constructor() {
     this.hf = new HfInference(import.meta.env.VITE_HUGGINGFACE_API_KEY);
