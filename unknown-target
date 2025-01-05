@@ -64,7 +64,7 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.1",
-    "whitesource": "^18.10.1",
+    "whitesource": "^18.4.2",
     "ws": "^7.5.10",
     "zod": "^3.23.8"
   },
