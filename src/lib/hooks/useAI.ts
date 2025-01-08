@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 import { useState } from "react";
-import { GenerationParams, GenerationResult } from "../models";
+import { GenerationParams, GenerationResult } from "../types";
 import { aiService } from "../services/ai-service";
-=======
-import { useState, useEffect } from "react";
-import { endpoints, GenerationParams, GenerationResult } from "../api-client";
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
 export function useAI() {
   const [isLoading, setIsLoading] = useState(false);
@@ -20,7 +15,7 @@ export function useAI() {
       setProgress(0);
 
       // Calculate total steps based on batch size
-      const totalSteps = params.batchSize;
+      const totalSteps = params.batchSize || 1;
       let completedSteps = 0;
 
       const generatedResults: GenerationResult[] = [];
@@ -56,25 +51,11 @@ export function useAI() {
     }
   };
 
-<<<<<<< HEAD
   const cancelGeneration = () => {
     aiService.interrupt();
     setIsLoading(false);
     setProgress(0);
   };
-=======
-  useEffect(() => {
-    const handleAIStateChange = async () => {
-      try {
-        // Perform any necessary state updates here
-      } catch (error) {
-        console.error("Failed to update AI state:", error);
-      }
-    };
-
-    handleAIStateChange();
-  }, []);
->>>>>>> 3c8cb07db8e5ced0068231abaca2aceb1497ad95
 
   return {
     generate,
