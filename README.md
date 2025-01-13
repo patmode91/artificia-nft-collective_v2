@@ -87,6 +87,20 @@ After running a Whitesource scan, you can interpret the scan results as follows:
 5. Check that the scan results include issues with a severity level of "LOW" and above.
 6. Verify that the scan results focus on dependency-related issues.
 
+## Resolving Vulnerabilities in `whitesource-19.12.1.tgz`
+
+The following steps were taken to resolve the vulnerabilities in the `whitesource-19.12.1.tgz` library:
+
+1. Updated `package.json` to use non-vulnerable versions of dependencies:
+   - `braces` to `3.0.3`
+   - `hawk` to `9.0.1`
+   - `tough-cookie` to `4.1.3`
+   - `request` to `@cypress/request 3.0.0`
+   - `micromatch` to `4.0.8`
+   - `got` to `11.8.5`
+2. Removed `whitesource-19.12.1.tgz` from the repository.
+3. Updated `.whitesource` configuration to reflect the resolved vulnerabilities.
+
 ## API References
 
 ### AI Model API
