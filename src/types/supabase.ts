@@ -446,6 +446,39 @@ export type Database = {
         }
         Relationships: []
       }
+      style_analytics: {
+        Row: {
+          combined_with: string | null
+          created_at: string
+          generation_time: number
+          guidance: number
+          id: string
+          quality_score: number
+          style_id: string
+          success: boolean
+        }
+        Insert: {
+          combined_with?: string | null
+          created_at?: string
+          generation_time: number
+          guidance: number
+          id?: string
+          quality_score: number
+          style_id: string
+          success?: boolean
+        }
+        Update: {
+          combined_with?: string | null
+          created_at?: string
+          generation_time?: number
+          guidance?: number
+          id?: string
+          quality_score?: number
+          style_id?: string
+          success?: boolean
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string | null
