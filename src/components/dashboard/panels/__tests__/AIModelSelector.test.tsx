@@ -152,4 +152,29 @@ describe("AIModelSelector", () => {
       );
     });
   });
+
+  it("should handle new AI models", async () => {
+    render(<AIModelSelector onGenerate={mockOnGenerate} />);
+
+    // Select a new AI model
+    const modelSelect = screen.getByLabelText(/AI Model/i);
+    fireEvent.change(modelSelect, { target: { value: AI_MODELS[5].id } });
+
+    // Verify model gets updated
+    expect(modelSelect).toHaveValue(AI_MODELS[5].id);
+  });
+
+  it("should handle new style presets", async () => {
+    render(<AIModelSelector onGenerate={mockOnGenerate} />);
+
+    // Select a new style preset
+    const styleSelect = screen.getByLabelText(/Style Preset/i);
+    fireEvent.change(styleSelect, { target: { value: STYLE_PRESETS[5].id } });
+
+    // Verify prompt gets updated with new style preset
+    const promptInput = screen.getByPlaceholder("Enter your prompt here...");
+    expect(promptInput).toHaveValue(
+      expect.stringContaining(STYLE_PRESETS[5].prompt),
+    );
+  });
 });

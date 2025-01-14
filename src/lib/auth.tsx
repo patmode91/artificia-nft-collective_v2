@@ -11,6 +11,7 @@ type AuthContextType = {
   loading: boolean;
   hasAccess: (endpoint: string) => boolean;
   error: string | null;
+  isAdmin: () => boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -97,16 +98,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const hasAccess = (endpoint: string) => {
-    // Implement your access control logic here
-    // For example, you can check user roles or permissions
     if (!user) return false;
-    // Example: Allow access to all endpoints for authenticated users
-    return true;
+    const userRole = user.user_metadata.role;
+    const accessControl = {
+      admin: ["*"],
+      user: ["/dashboard", "/profile"],
+    };
+    return accessControl[userRole]?.includes(endpoint) || false;
+  };
+
+  const isAdmin = () => {
+    return user?.user_metadata.role === "admin";
   };
 
   return (
     <AuthContext.Provider
-      value={{ session, user, signIn, signUp, signOut, loading, hasAccess, error }}
+      value={{ session, user, signIn, signUp, signOut, loading, hasAccess, error, isAdmin }}
     >
       {children}
     </AuthContext.Provider>

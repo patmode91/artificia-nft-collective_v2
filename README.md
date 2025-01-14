@@ -24,6 +24,10 @@ The overall goal of this project is to democratize access to AI-generated art an
 - Web3 wallet integration
 - Transaction monitoring
 - Real-time updates
+- User authentication and authorization
+- Enhanced user interface and user experience
+- Comprehensive testing
+- Detailed analytics and performance tracking
 
 ## Getting Started
 
@@ -342,6 +346,26 @@ More customization options have been added for AI art generation, such as adjust
 ### Create and Share Custom Styles
 
 Users can create and share their own custom styles and presets with the community. This fosters collaboration and allows users to explore new creative possibilities.
+
+## Contributing
+
+We welcome contributions from the community! Please follow these steps to contribute:
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Code Style
+
+- Use Prettier for code formatting.
+- Follow the ESLint rules defined in the project.
+
+### Commit Messages
+
+- Use clear and descriptive commit messages.
+- Follow the conventional commits specification.
 
 ## License
 

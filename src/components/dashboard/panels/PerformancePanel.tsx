@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LineChart, BarChart, Activity, TrendingUp } from "lucide-react";
+import { LineChart, BarChart, Activity, TrendingUp, PieChart, DollarSign, Clock } from "lucide-react";
 
 interface PerformancePanelProps {
   generationStats?: {
@@ -22,6 +22,16 @@ interface PerformancePanelProps {
   historicalData?: {
     performance: number[];
     dates: string[];
+  };
+  userEngagement?: {
+    activeUsers: number;
+    newUsers: number;
+    retentionRate: number;
+  };
+  revenueMetrics?: {
+    totalRevenue: number;
+    averageRevenuePerUser: number;
+    revenueGrowthRate: number;
   };
 }
 
@@ -45,13 +55,23 @@ const PerformancePanel = ({
     performance: [85, 87, 89, 92, 90, 93, 95],
     dates: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
   },
+  userEngagement = {
+    activeUsers: 1200,
+    newUsers: 300,
+    retentionRate: 75.5,
+  },
+  revenueMetrics = {
+    totalRevenue: 50000,
+    averageRevenuePerUser: 42,
+    revenueGrowthRate: 12.5,
+  },
 }: PerformancePanelProps) => {
   return (
     <div className="w-full h-full bg-background p-6">
       <h1 className="text-3xl font-bold mb-6">Performance Metrics</h1>
 
       <Tabs defaultValue="generation" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 mb-6">
+        <TabsList className="grid w-full grid-cols-6 mb-6">
           <TabsTrigger value="generation" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
             Generation Stats
@@ -67,6 +87,14 @@ const PerformancePanel = ({
           <TabsTrigger value="historical" className="flex items-center gap-2">
             <LineChart className="h-4 w-4" />
             Historical
+          </TabsTrigger>
+          <TabsTrigger value="engagement" className="flex items-center gap-2">
+            <PieChart className="h-4 w-4" />
+            User Engagement
+          </TabsTrigger>
+          <TabsTrigger value="revenue" className="flex items-center gap-2">
+            <DollarSign className="h-4 w-4" />
+            Revenue Metrics
           </TabsTrigger>
         </TabsList>
 
@@ -158,6 +186,52 @@ const PerformancePanel = ({
               ))}
             </div>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="engagement">
+          <div className="grid grid-cols-3 gap-4">
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">Active Users</h3>
+              <p className="text-3xl font-bold">
+                {userEngagement.activeUsers}
+              </p>
+            </Card>
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">New Users</h3>
+              <p className="text-3xl font-bold">
+                {userEngagement.newUsers}
+              </p>
+            </Card>
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">Retention Rate</h3>
+              <p className="text-3xl font-bold">
+                {userEngagement.retentionRate}%
+              </p>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="revenue">
+          <div className="grid grid-cols-3 gap-4">
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">Total Revenue</h3>
+              <p className="text-3xl font-bold">
+                ${revenueMetrics.totalRevenue.toLocaleString()}
+              </p>
+            </Card>
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">Avg Revenue/User</h3>
+              <p className="text-3xl font-bold">
+                ${revenueMetrics.averageRevenuePerUser}
+              </p>
+            </Card>
+            <Card className="p-4">
+              <h3 className="text-lg font-medium mb-2">Revenue Growth Rate</h3>
+              <p className="text-3xl font-bold">
+                {revenueMetrics.revenueGrowthRate}%
+              </p>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
