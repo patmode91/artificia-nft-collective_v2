@@ -101,4 +101,92 @@ describe("MintNFTDialog", () => {
       expect(screen.getByText("Mint failed")).toBeInTheDocument();
     });
   });
+
+  it("should handle transaction status updates", async () => {
+    const mockTxHash = "0x789";
+    vi.mocked(nftService.mintNFT).mockResolvedValue({
+      tokenId: "2",
+      transactionHash: mockTxHash,
+      metadata: {},
+    });
+
+    render(
+      <MintNFTDialog
+        isOpen={true}
+        onClose={() => {}}
+        imageFile={new File([], "test.png")}
+        previewUrl="test.png"
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Name"), {
+      target: { value: "Test NFT 2" },
+    });
+    fireEvent.change(screen.getByLabelText("Description"), {
+      target: { value: "Test Description 2" },
+    });
+
+    fireEvent.click(screen.getByText("Mint NFT"));
+
+    await waitFor(() => {
+      expect(nftService.mintNFT).toHaveBeenCalledWith(
+        expect.any(File),
+        expect.objectContaining({
+          name: "Test NFT 2",
+          description: "Test Description 2",
+        }),
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("Minting in Progress...")).toBeInTheDocument();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("NFT Minted Successfully")).toBeInTheDocument();
+    });
+  });
+
+  it("should handle transaction failure", async () => {
+    const mockTxHash = "0xabc";
+    vi.mocked(nftService.mintNFT).mockResolvedValue({
+      tokenId: "3",
+      transactionHash: mockTxHash,
+      metadata: {},
+    });
+
+    render(
+      <MintNFTDialog
+        isOpen={true}
+        onClose={() => {}}
+        imageFile={new File([], "test.png")}
+        previewUrl="test.png"
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText("Name"), {
+      target: { value: "Test NFT 3" },
+    });
+    fireEvent.change(screen.getByLabelText("Description"), {
+      target: { value: "Test Description 3" },
+    });
+
+    fireEvent.click(screen.getByText("Mint NFT"));
+
+    await waitFor(() => {
+      expect(nftService.mintNFT).toHaveBeenCalledWith(
+        expect.any(File),
+        expect.objectContaining({
+          name: "Test NFT 3",
+          description: "Test Description 3",
+        }),
+      );
+    });
+
+    vi.mocked(nftService.mintNFT).mockRejectedValue(new Error("Transaction failed"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Minting Failed")).toBeInTheDocument();
+    });
+  });
 });

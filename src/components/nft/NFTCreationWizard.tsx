@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import {
   Upload,
   Wand2,
@@ -164,48 +165,76 @@ export function NFTCreationWizard({ onComplete }: NFTCreationWizardProps) {
           <div className="grid gap-4">
             <div className="space-y-2">
               <Label>Name</Label>
-              <Input
-                value={metadata.name}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, name: e.target.value })
-                }
-                placeholder="Enter NFT name"
-              />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Input
+                    value={metadata.name}
+                    onChange={(e) =>
+                      setMetadata({ ...metadata, name: e.target.value })
+                    }
+                    placeholder="Enter NFT name"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Enter a name for your NFT.
+                </TooltipContent>
+              </Tooltip>
             </div>
 
             <div className="space-y-2">
               <Label>Description</Label>
-              <Textarea
-                value={metadata.description}
-                onChange={(e) =>
-                  setMetadata({ ...metadata, description: e.target.value })
-                }
-                placeholder="Enter NFT description"
-              />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Textarea
+                    value={metadata.description}
+                    onChange={(e) =>
+                      setMetadata({ ...metadata, description: e.target.value })
+                    }
+                    placeholder="Enter NFT description"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Enter a description for your NFT.
+                </TooltipContent>
+              </Tooltip>
             </div>
 
             <div className="space-y-2">
               <Label>Attributes</Label>
               {metadata.attributes.map((attr, index) => (
                 <div key={index} className="flex gap-2">
-                  <Input
-                    value={attr.trait_type}
-                    onChange={(e) => {
-                      const newAttrs = [...metadata.attributes];
-                      newAttrs[index].trait_type = e.target.value;
-                      setMetadata({ ...metadata, attributes: newAttrs });
-                    }}
-                    placeholder="Trait type"
-                  />
-                  <Input
-                    value={attr.value}
-                    onChange={(e) => {
-                      const newAttrs = [...metadata.attributes];
-                      newAttrs[index].value = e.target.value;
-                      setMetadata({ ...metadata, attributes: newAttrs });
-                    }}
-                    placeholder="Value"
-                  />
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Input
+                        value={attr.trait_type}
+                        onChange={(e) => {
+                          const newAttrs = [...metadata.attributes];
+                          newAttrs[index].trait_type = e.target.value;
+                          setMetadata({ ...metadata, attributes: newAttrs });
+                        }}
+                        placeholder="Trait type"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Enter the trait type.
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Input
+                        value={attr.value}
+                        onChange={(e) => {
+                          const newAttrs = [...metadata.attributes];
+                          newAttrs[index].value = e.target.value;
+                          setMetadata({ ...metadata, attributes: newAttrs });
+                        }}
+                        placeholder="Value"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Enter the value for the trait.
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               ))}
             </div>
@@ -224,46 +253,67 @@ export function NFTCreationWizard({ onComplete }: NFTCreationWizardProps) {
           <div className="grid gap-4">
             <div className="space-y-2">
               <Label>Contract Name</Label>
-              <Input
-                value={contractSettings.name}
-                onChange={(e) =>
-                  setContractSettings({
-                    ...contractSettings,
-                    name: e.target.value,
-                  })
-                }
-                placeholder="Enter contract name"
-              />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Input
+                    value={contractSettings.name}
+                    onChange={(e) =>
+                      setContractSettings({
+                        ...contractSettings,
+                        name: e.target.value,
+                      })
+                    }
+                    placeholder="Enter contract name"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Enter the name for the smart contract.
+                </TooltipContent>
+              </Tooltip>
             </div>
 
             <div className="space-y-2">
               <Label>Symbol</Label>
-              <Input
-                value={contractSettings.symbol}
-                onChange={(e) =>
-                  setContractSettings({
-                    ...contractSettings,
-                    symbol: e.target.value,
-                  })
-                }
-                placeholder="Enter token symbol"
-              />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Input
+                    value={contractSettings.symbol}
+                    onChange={(e) =>
+                      setContractSettings({
+                        ...contractSettings,
+                        symbol: e.target.value,
+                      })
+                    }
+                    placeholder="Enter token symbol"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Enter the symbol for the token.
+                </TooltipContent>
+              </Tooltip>
             </div>
 
             <div className="space-y-2">
               <Label>Royalties (%)</Label>
-              <Input
-                type="number"
-                value={contractSettings.royalties}
-                onChange={(e) =>
-                  setContractSettings({
-                    ...contractSettings,
-                    royalties: Number(e.target.value),
-                  })
-                }
-                min="0"
-                max="100"
-              />
+              <Tooltip>
+                <TooltipTrigger>
+                  <Input
+                    type="number"
+                    value={contractSettings.royalties}
+                    onChange={(e) =>
+                      setContractSettings({
+                        ...contractSettings,
+                        royalties: Number(e.target.value),
+                      })
+                    }
+                    min="0"
+                    max="100"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  Enter the percentage of royalties.
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
 
