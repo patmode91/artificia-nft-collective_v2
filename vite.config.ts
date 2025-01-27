@@ -7,7 +7,7 @@ import { tempo } from "tempo-devtools/dist/vite";
 const conditionalPlugins = [];
 
 if (process.env.TEMPO) {
-  conditionalPlugins.push(['tempo-devtools/swc', {}]);
+  conditionalPlugins.push(["tempo-devtools/swc", {}]);
 }
 
 // https://vitejs.dev/config/
@@ -19,6 +19,13 @@ export default defineConfig({
     hmr: {
       overlay: false,
     },
+    proxy: {
+      "/metrics": {
+        target: "http://localhost:9090",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/metrics/, ""),
+      },
+    },
   },
   optimizeDeps: {
     include: ["react", "react-dom"],
@@ -26,9 +33,9 @@ export default defineConfig({
   },
   plugins: [
     react({
-      plugins: [...conditionalPlugins]
+      plugins: [...conditionalPlugins],
     }),
-    tempo()
+    tempo(),
   ],
   resolve: {
     alias: {
