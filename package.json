@@ -62,7 +62,7 @@
     "glob-parent": "^5.1.2",
     "got": "^12.1.0",
     "hawk": "^9.0.1",
-    "ipfs-http-client": "^57.0.3",
+    "ipfs-http-client": "^57.0.4-051da161.0",
     "lucide-react": "^0.394.0",
     "micromatch": "^4.0.8",
     "nanoid": "^3.3.8",
@@ -93,5 +93,8 @@
     "tempo-devtools": "^2.0.94",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
+  },
+  "resolutions": {
+    "nanoid": "^3.3.8"
   }
 }
